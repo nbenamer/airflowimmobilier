@@ -1,0 +1,28 @@
+[2026-04-10T13:12:01.169+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:01:16+00:00 [queued]>
+[2026-04-10T13:12:01.255+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:01:16+00:00 [queued]>
+[2026-04-10T13:12:01.266+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2026-04-10T13:12:01.385+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): verifier_sources> on 2026-04-10 13:01:16+00:00
+[2026-04-10T13:12:01.497+0000] {standard_task_runner.py:60} INFO - Started process 718 to run task
+[2026-04-10T13:12:01.670+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_dvf_immobilier', 'verifier_sources', 'manual__2026-04-10T13:01:16+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/dag_dvf.py', '--cfg-path', '/tmp/tmpfqpkdfwg']
+[2026-04-10T13:12:01.753+0000] {standard_task_runner.py:88} INFO - Job 3: Subtask verifier_sources
+[2026-04-10T13:12:03.001+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:01:16+00:00 [running]> on host 2d3801ffc164
+[2026-04-10T13:12:51.604+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='pipeline_dvf_immobilier' AIRFLOW_CTX_TASK_ID='verifier_sources' AIRFLOW_CTX_EXECUTION_DATE='2026-04-10T13:01:16+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-04-10T13:01:16+00:00'
+[2026-04-10T13:13:05.905+0000] {dag_dvf.py:63} WARNING - HDFS KO : HTTPConnectionPool(host='hdfs-namenode', port=9870): Read timed out. (read timeout=10)
+[2026-04-10T13:13:06.200+0000] {dag_dvf.py:66} INFO - dvf_api=False  hdfs=False
+[2026-04-10T13:13:06.554+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/dag_dvf.py", line 69, in verifier_sources
+    raise AirflowException("API DVF inaccessible — pipeline interrompu.")
+airflow.exceptions.AirflowException: API DVF inaccessible — pipeline interrompu.
+[2026-04-10T13:13:06.595+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=pipeline_dvf_immobilier, task_id=verifier_sources, execution_date=20260410T130116, start_date=20260410T131201, end_date=20260410T131306
+[2026-04-10T13:13:06.799+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3 for task verifier_sources (API DVF inaccessible — pipeline interrompu.; 718)
+[2026-04-10T13:13:07.058+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-04-10T13:13:32.788+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

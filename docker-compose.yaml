@@ -1,0 +1,139 @@
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.1
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+    AIRFLOW__WEBSERVER__WORKERS: '1'
+    AIRFLOW__SCHEDULER__MAX_DAGRUNS_TO_CREATE_PER_LOOP: '1'
+    AIRFLOW__SCHEDULER__PARSING_PROCESSES: '1'
+    AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT: '300'
+    _PIP_ADDITIONAL_REQUIREMENTS: "pandas requests psycopg2-binary"
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+  depends_on:
+    postgres:
+      condition: service_healthy
+  networks:
+    - dvf-network
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: dvf-postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/init_dvf.sql:/docker-entrypoint-initdb.d/init_dvf.sql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    networks:
+      - dvf-network
+
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: dvf-airflow-webserver
+    command: webserver
+    ports:
+      - "18080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: dvf-airflow-scheduler
+    command: scheduler
+    healthcheck:
+      test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  airflow-init:
+    <<: *airflow-common
+    container_name: dvf-airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com \
+          --password admin
+        airflow connections add 'dvf_postgres' \
+          --conn-type 'postgres' \
+          --conn-host 'postgres' \
+          --conn-login 'airflow' \
+          --conn-password 'airflow' \
+          --conn-port '5432' \
+          --conn-schema 'dvf'
+    restart: "no"
+
+  hdfs-namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: dvf-namenode
+    ports:
+      - "19870:9870"
+      - "9001:9000"
+    environment:
+      - CLUSTER_NAME=dvf-cluster
+      - CORE_CONF_fs_defaultFS=hdfs://hdfs-namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+    volumes:
+      - namenode-data:/hadoop/dfs/name
+    networks:
+      - dvf-network
+
+  hdfs-datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: dvf-datanode
+    ports:
+      - "19864:9864"
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://hdfs-namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+    volumes:
+      - datanode-data:/hadoop/dfs/data
+    depends_on:
+      - hdfs-namenode
+    networks:
+      - dvf-network
+
+volumes:
+  postgres-data:
+  namenode-data:
+  datanode-data:
+
+networks:
+  dvf-network:
+    driver: bridge

@@ -1,0 +1,28 @@
+[2026-04-10T13:24:24.293+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:24:18.224409+00:00 [queued]>
+[2026-04-10T13:24:24.336+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:24:18.224409+00:00 [queued]>
+[2026-04-10T13:24:24.340+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2026-04-10T13:24:24.477+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): verifier_sources> on 2026-04-10 13:24:18.224409+00:00
+[2026-04-10T13:24:24.537+0000] {standard_task_runner.py:60} INFO - Started process 300 to run task
+[2026-04-10T13:24:24.589+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_dvf_immobilier', 'verifier_sources', 'manual__2026-04-10T13:24:18.224409+00:00', '--job-id', '11', '--raw', '--subdir', 'DAGS_FOLDER/dag_dvf.py', '--cfg-path', '/tmp/tmp5711yrxe']
+[2026-04-10T13:24:24.639+0000] {standard_task_runner.py:88} INFO - Job 11: Subtask verifier_sources
+[2026-04-10T13:24:26.073+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_dvf_immobilier.verifier_sources manual__2026-04-10T13:24:18.224409+00:00 [running]> on host 2d3801ffc164
+[2026-04-10T13:24:45.601+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='pipeline_dvf_immobilier' AIRFLOW_CTX_TASK_ID='verifier_sources' AIRFLOW_CTX_EXECUTION_DATE='2026-04-10T13:24:18.224409+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-04-10T13:24:18.224409+00:00'
+[2026-04-10T13:25:13.872+0000] {dag_dvf.py:63} WARNING - HDFS KO : HTTPConnectionPool(host='hdfs-namenode', port=9870): Max retries exceeded with url: /webhdfs/v1/?op=LISTSTATUS&user.name=root (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff76c704f0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+[2026-04-10T13:25:14.500+0000] {dag_dvf.py:66} INFO - dvf_api=False  hdfs=False
+[2026-04-10T13:25:31.600+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/dag_dvf.py", line 69, in verifier_sources
+    raise AirflowException("API DVF inaccessible — pipeline interrompu.")
+airflow.exceptions.AirflowException: API DVF inaccessible — pipeline interrompu.
+[2026-04-10T13:25:34.453+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=pipeline_dvf_immobilier, task_id=verifier_sources, execution_date=20260410T132418, start_date=20260410T132424, end_date=20260410T132534
+[2026-04-10T13:25:36.202+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 11 for task verifier_sources (API DVF inaccessible — pipeline interrompu.; 300)
+[2026-04-10T13:25:37.160+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-04-10T13:25:39.413+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

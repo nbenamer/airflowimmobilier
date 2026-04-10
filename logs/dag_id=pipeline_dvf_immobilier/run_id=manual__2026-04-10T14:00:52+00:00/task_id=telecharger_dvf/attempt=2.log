@@ -1,0 +1,18 @@
+[2026-04-10T14:05:55.403+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.telecharger_dvf manual__2026-04-10T14:00:52+00:00 [queued]>
+[2026-04-10T14:05:55.408+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_dvf_immobilier.telecharger_dvf manual__2026-04-10T14:00:52+00:00 [queued]>
+[2026-04-10T14:05:55.408+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2026-04-10T14:05:55.414+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): telecharger_dvf> on 2026-04-10 14:00:52+00:00
+[2026-04-10T14:05:55.417+0000] {standard_task_runner.py:60} INFO - Started process 584 to run task
+[2026-04-10T14:05:55.419+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_dvf_immobilier', 'telecharger_dvf', 'manual__2026-04-10T14:00:52+00:00', '--job-id', '29', '--raw', '--subdir', 'DAGS_FOLDER/dag_dvf.py', '--cfg-path', '/tmp/tmpl1vblq5z']
+[2026-04-10T14:05:55.421+0000] {standard_task_runner.py:88} INFO - Job 29: Subtask telecharger_dvf
+[2026-04-10T14:05:55.444+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_dvf_immobilier.telecharger_dvf manual__2026-04-10T14:00:52+00:00 [running]> on host 72db7f4e5406
+[2026-04-10T14:05:55.666+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='pipeline_dvf_immobilier' AIRFLOW_CTX_TASK_ID='telecharger_dvf' AIRFLOW_CTX_EXECUTION_DATE='2026-04-10T14:00:52+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-04-10T14:00:52+00:00'
+[2026-04-10T14:05:55.666+0000] {dag_dvf.py:82} INFO - Téléchargement DVF 2026 → /tmp/dvf_2026.csv
+[2026-04-10T14:05:57.550+0000] {dag_dvf.py:94} INFO - Téléchargé : 52.4 Mo
+[2026-04-10T14:05:58.622+0000] {dag_dvf.py:98} INFO - Décompression du ZIP...
+[2026-04-10T14:05:58.627+0000] {dag_dvf.py:101} INFO - Fichiers dans le ZIP : ['ValeursFoncieres-2023.txt']
+[2026-04-10T14:06:00.144+0000] {dag_dvf.py:110} INFO - Téléchargement terminé : 510.0 Mo
+[2026-04-10T14:06:00.158+0000] {python.py:201} INFO - Done. Returned value was: /tmp/dvf_2026.csv
+[2026-04-10T14:06:00.240+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=pipeline_dvf_immobilier, task_id=telecharger_dvf, execution_date=20260410T140052, start_date=20260410T140555, end_date=20260410T140600
+[2026-04-10T14:06:00.306+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-04-10T14:06:00.357+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
